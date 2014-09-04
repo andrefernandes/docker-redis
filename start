@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+chown -R redis:redis /var/lib/redis
+MAXFILES=$(($MAXCLIENTS + 32))
+ulimit -Sn $MAXFILES
+echo "maxclients $MAXCLIENTS" >> /etc/redis.conf
+exec sudo -u redis -H /usr/bin/redis-server /etc/redis.conf
+
