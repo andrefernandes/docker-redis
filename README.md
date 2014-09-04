@@ -23,7 +23,7 @@ http://wikipedia.org/wiki/Redis
 
 #### start a redis instance
 
-    docker run --name some-redis -d andrefernandes/docker-redis
+    docker run --name some-redis -P -d andrefernandes/docker-redis
 
 This image includes EXPOSE 6379 (the redis port), so standard container 
 linking will make it automatically available to the linked containers 
@@ -31,11 +31,15 @@ linking will make it automatically available to the linked containers
 
 #### start with persistent storage
 
-Mounting the container "/data" volume on the "/opt/redis-data" host folder:
+Mounting the container VOLUME "/data" on the "/opt/redis-data" host folder:
 
     docker run --name some-redis -v /opt/redis-data:/data -d andrefernandes/docker-redis redis-server --appendonly yes
 
-If persistence is enabled, data is stored in the VOLUME /data, which can be used with --volumes-from some-volume-container or -v /docker/host/dir:/data (see docs.docker volumes).
+Persistent data for VOLUME "/data" can also be stored in a volume container,
+which can be used with --volumes-from some-volume-container:
+
+    docker run --name some-redis-data -d -v /data busybox echo "Data volume container for Redis"
+    docker run -d --volumes-from some-redis-data --name some-redis andrefernandes/docker-redis
 
 For more about Redis Persistence, see http://redis.io/topics/persistence.
 
@@ -45,6 +49,6 @@ For more about Redis Persistence, see http://redis.io/topics/persistence.
 
 #### … or via redis-cli
 
-    docker run -it --link some-redis:redis --rm redis sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
+    docker run -it --link some-redis:redis --rm andrefernandes/docker-redis sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
 
 
