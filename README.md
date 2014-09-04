@@ -17,13 +17,13 @@ was sponsored by VMware. According to the monthly ranking by
 DB-Engines.com, Redis is the most popular key-value store.
 The name Redis means REmote DIctionary Server.
 
-wikipedia.org/wiki/Redis
+http://wikipedia.org/wiki/Redis
 
 ### How to use this image
 
 #### start a redis instance
 
-    docker run --name some-redis -d redis
+    docker run --name some-redis -d andrefernandes/docker-redis
 
 This image includes EXPOSE 6379 (the redis port), so standard container 
 linking will make it automatically available to the linked containers 
@@ -31,7 +31,9 @@ linking will make it automatically available to the linked containers
 
 #### start with persistent storage
 
-    docker run --name some-redis -d redis redis-server --appendonly yes
+Mounting the container "/data" volume on the "/opt/redis-data" host folder:
+
+    docker run --name some-redis -v /opt/redis-data:/data -d andrefernandes/docker-redis redis-server --appendonly yes
 
 If persistence is enabled, data is stored in the VOLUME /data, which can be used with --volumes-from some-volume-container or -v /docker/host/dir:/data (see docs.docker volumes).
 
